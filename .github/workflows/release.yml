@@ -1,0 +1,30 @@
+# Continuous delivery: when a version tag such as v0.1.0 is pushed,
+# test the code, build the package and publish it as a GitHub Release.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test before release
+        run: |
+          pip install -e ".[dev]"
+          pytest
+      - name: Build package
+        run: python -m build
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
