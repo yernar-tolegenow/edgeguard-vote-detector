@@ -1,7 +1,7 @@
 """Command-line interface.
 
-    edgeguard demo                     run on built-in synthetic data and print scores
-    edgeguard run data.csv --column kw run on your own CSV and write a result CSV
+edgeguard demo                     run on built-in synthetic data and print scores
+edgeguard run data.csv --column kw run on your own CSV and write a result CSV
 """
 
 from __future__ import annotations
