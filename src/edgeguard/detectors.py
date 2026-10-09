@@ -8,22 +8,30 @@ from __future__ import annotations
 import numpy as np
 from sklearn.ensemble import IsolationForest
 
-from .features import MAD_SCALE, EPS, as_array, feature_matrix, first_difference, robust_z
+from .features import EPS, MAD_SCALE, as_array, ewma, feature_matrix, first_difference, robust_z
 
 
 class RobustZDetector:
-    """Flags a sample that is far from the median of its recent past."""
+    """Flags a sample whose residual is far from the median of recent residuals.
+
+    The residual is the reading minus its EWMA. Taking the residual first removes
+    most of the slow daily cycle, so the score reacts to the attack and not to the
+    normal rise and fall of consumption.
+    """
 
     name = "robust_z"
 
-    def __init__(self, window: int = 96, threshold: float = 3.5) -> None:
+    def __init__(self, window: int = 96, threshold: float = 3.5, alpha: float = 0.3) -> None:
         if threshold <= 0:
             raise ValueError("threshold must be positive")
         self.window = window
         self.threshold = threshold
+        self.alpha = alpha
 
     def predict(self, x) -> np.ndarray:
-        z = robust_z(x, self.window)
+        arr = as_array(x)
+        residual = arr - ewma(arr, self.alpha)
+        z = robust_z(residual, self.window)
         return np.nan_to_num(np.abs(z), nan=0.0) > self.threshold
 
 
