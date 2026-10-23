@@ -132,6 +132,18 @@ See [docs/technology-choices.md](docs/technology-choices.md).
 - Thresholds are fixed. They are not re-tuned when consumption patterns change.
 - Speed and memory have not been measured on real gateway hardware.
 
+## Docker and Jenkins
+
+The `Dockerfile` builds a small image that runs the CLI as a non-root user:
+
+```bash
+docker build --target runtime -t edgeguard-vote-detector .
+docker run --rm edgeguard-vote-detector          # runs the demo
+```
+
+The `Jenkinsfile` is a CI pipeline (lint, unit tests, image build, smoke test, optional push to Docker Hub).
+Setup steps for a local Jenkins are in [docs/jenkins-setup.md](docs/jenkins-setup.md).
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
