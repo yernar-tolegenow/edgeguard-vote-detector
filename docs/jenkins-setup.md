@@ -70,5 +70,6 @@ docker run --rm edgeguard-vote-detector --version
 ## Troubleshooting
 
 - `docker: not found` inside a stage: rebuild with `docker compose up -d --build` so the Docker CLI is in the image.
+- The Jenkins image build hangs on `apt` or `Ign:` lines: the image no longer uses apt (it copies the Docker CLI from `docker:cli`). Stop the build with Ctrl+C and run the build again.
 - `permission denied ... docker.sock`: the compose file runs Jenkins as root for this lab; do not remove `user: root`.
 - Nothing starts after a commit: check **Polling Log** in the job menu.
